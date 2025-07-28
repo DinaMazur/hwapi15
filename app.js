@@ -1,39 +1,4 @@
-// function GetCountryAPI (){
-//     return fetch("https://restcountries.com/v3.1/name/Italy?fullText=true")
-// }
 
-// GetCountryAPI().then((result) => result.json()).then((resultdata) => console.log(resultdata))
-
-
-// function createInfoCountry (countryObject) {
-//     console.log(weatherObject)
-
-// }
-
-// const countryButton = document.querySelector (".country-button")
-// countryButton.addEventListener("click", (event) =>{
-// const inputElement = document.querySelector(".country-form")
-// const tittleElement = document.querySelector(".country-tittle")
-// })
-
-// const listElement = document.querySelector(".country-list");
-// function showOurPage (data) {
-//     const listElement = document.querySelector(".country-list");
-//     let number = 0 
-//     const dynamicMarking =  data.map(country => {
-//         const elementOfLi = `
-//          <li class="country-item">
-//             <h2 class="country-capital">${country.capital}</h2>
-//             <p class="country-population">${country.population}</p>
-//             <p class="country-languages">${country.languages}</p>
-//             <img class="country-flag" src="" alt="" ${country.flags}>
-//         </li> `
-//         listElement.insertAdjacentHTML(`beforeend` , elementOfLi)
-//         return elementOfLi
-//     })
-
-// }
-// showOurPage()
 const input = document.getElementById("search");
 const output = document.getElementById("country-list");
 let timeoutId;
