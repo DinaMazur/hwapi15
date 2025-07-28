@@ -1,15 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Country Search</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/BrightTheme.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0f7e9, #f6fff7);
+      padding: 30px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 128, 0, 0.05);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border: 2px solid #a5d6a7;
+      border-radius: 8px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #43a047;
+      outline: none;
+    }
+
+    #country-list {
+      margin-top: 25px;
+    }
+
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+
+    ul li {
+      background: #e8f5e9;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(76, 175, 80, 0.1);
+      color: #2e7d32;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #2e7d32;
+    }
+
+    p {
+      margin: 6px 0;
+      color: #4e944f;
+      font-size: 15px;
+    }
+
+    img {
+      margin-top: 12px;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,128,0,0.1);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      input {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1 class="country-tittle">Шукай інформацію про країну </h1>
-    <input class="country-form" type="text">
-    <button class="country-button"></button>
-    <script type="module" src="./app.js"></script>
+  <div class="container">
+    <h1>Пошук країни</h1>
+    <input type="text" id="search" placeholder="Введіть назву країни..." />
+    <div id="country-list"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.js"></script>
+  <script>
+    const input = document.getElementById("search");
+    const output = document.getElementById("country-list");
+    let timeoutId;
+
+    input.addEventListener("input", () => {
+      clearTimeout(timeoutId);
+      const query = input.value.trim();
+      if (!query) return output.innerHTML = "";
+
+      timeoutId = setTimeout(() => {
+        fetch(`https://restcountries.com/v2/name/${query}`)
+          .then(res => res.ok ? res.json() : Promise.reject())
+          .then(data => {
+            output.innerHTML = "";
+
+            if (data.length > 10) {
+              return PNotify.info({ text: "Забагато результатів, уточніть запит." });
+            }
+
+            if (data.length > 1) {
+              output.innerHTML = "<ul>" + data.map(c => `<li>${c.name}</li>`).join("") + "</ul>";
+            } else {
+              const c = data[0];
+              output.innerHTML = `
+                <h2>${c.name}</h2>
+                <p>Столиця: ${c.capital}</p>
+                <p>Населення: ${c.population.toLocaleString()}</p>
+                <p>Мови: ${c.languages.map(l => l.name).join(", ")}</p>
+                <img src="${c.flag}" width="150" />
+              `;
+            }
+          })
+          .catch(() => PNotify.error({ text: "Країну не знайдено." }));
+      }, 500);
+    });
+  </script>
+  
 </body>
 </html>
+
